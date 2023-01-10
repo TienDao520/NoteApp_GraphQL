@@ -1,5 +1,5 @@
-import React, { createContext, useEffect } from 'react';
-import { useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
+
 import { getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ export default function AuthProvider({ children }) {
       //If user.uid is there state user will be change and share to all components in app
       if (user?.uid) {
         setUser(user);
-        localStorage.setItem('access_token', user.accessToken);
+        localStorage.setItem('accessToken', user.accessToken);
         return;
       }
 
