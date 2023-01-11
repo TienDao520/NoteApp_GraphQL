@@ -30,7 +30,6 @@ export default function Home() {
         <Grid item xs={9} sx={{ height: '100%' }}>
           {/* Outlet represent children in index.jsx router */}
           <Outlet />
-          {/* <p>Note List</p> */}
         </Grid>
       </Grid>
     </>

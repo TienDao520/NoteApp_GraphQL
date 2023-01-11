@@ -5,6 +5,7 @@ import AuthProvider from '../context/AuthProvider';
 import ProtectedRoute from './ProtectedRoute';
 import ErrorPage from '../pages/ErrorPage';
 import NoteList from '../components/NoteList';
+import Note from '../components/Note';
 
 const AuthLayout = () => {
   return (
@@ -33,15 +34,17 @@ export default createBrowserRouter([
               {
                 element: <NoteList />,
                 path: `folders/:folderId`,
+                children: [
+                  {
+                    element: <Note />,
+                    path: `note/:noteId`,
+                  },
+                ],
               },
             ],
           },
         ],
       },
-      // {
-      //   element: <Home />,
-      //   path: '/',
-      // },
     ],
   },
 ]);

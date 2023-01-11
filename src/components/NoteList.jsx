@@ -1,6 +1,6 @@
 import { Card, CardContent, Grid, List } from '@mui/material';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 export default function NoteList() {
   const folder = {
@@ -11,13 +11,25 @@ export default function NoteList() {
   };
   return (
     <Grid container height='100%'>
-      <Grid item xs={4}>
+      <Grid
+        item
+        xs={4}
+        sx={{
+          width: '100%',
+          height: '100%',
+          maxWidth: 360,
+          bgcolor: '#EEDEC0',
+          padding: '10px',
+          textAlign: 'left',
+          overflowY: 'auto',
+        }}
+      >
         <List>
           {folder.notes.map(({ id, content }) => {
             return (
               <Link
                 key={id}
-                to={`node/${id}`}
+                to={`note/${id}`}
                 style={{ textDecoration: 'none' }}
               >
                 <Card sx={{ mb: '5px' }}>
@@ -37,7 +49,10 @@ export default function NoteList() {
           })}
         </List>
       </Grid>
-      <Grid item xs={8}></Grid>
+      <Grid item xs={8}>
+        {/* Node Detail */}
+        <Outlet />
+      </Grid>
     </Grid>
   );
 }
