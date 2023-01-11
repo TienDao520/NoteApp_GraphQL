@@ -1,11 +1,13 @@
 import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import FolderList from '../components/FolderList';
 import UserMenu from '../components/UserMenu';
 
 export default function Home() {
+  const { folders } = useLoaderData();
+  // console.log('[HomeData]', data);
   return (
     <>
       <Typography variant='h4' sx={{ mb: '20px' }}>
@@ -19,12 +21,7 @@ export default function Home() {
         sx={{ height: '50vh', boxShadow: '0 0 15px 0 rgb(193 193 193 / 60%)' }}
       >
         <Grid item xs={3} sx={{ height: '100%' }}>
-          <FolderList
-            folders={[
-              { id: '1', name: 'Plan for Lunar New Year' },
-              { id: '2', name: '2023 Plan' },
-            ]}
-          />
+          <FolderList folders={folders} />
           {/* <p>Folder List</p> */}
         </Grid>
         <Grid item xs={9} sx={{ height: '100%' }}>
