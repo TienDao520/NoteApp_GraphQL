@@ -1,6 +1,7 @@
 import { Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import FolderList from '../components/FolderList';
 import UserMenu from '../components/UserMenu';
 
@@ -27,8 +28,9 @@ export default function Home() {
           {/* <p>Folder List</p> */}
         </Grid>
         <Grid item xs={9} sx={{ height: '100%' }}>
-          {/* <Outlet /> */}
-          <p>Note List</p>
+          {/* Outlet represent children in index.jsx router */}
+          <Outlet />
+          {/* <p>Note List</p> */}
         </Grid>
       </Grid>
     </>
