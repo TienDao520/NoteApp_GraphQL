@@ -11,6 +11,9 @@ import router from './router';
 import { Container } from '@mui/system';
 import './firebase/config';
 import Image from './broly.png';
+
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 const styles = {
   paperContainer: {
     backgroundImage: `url(${Image})`,
