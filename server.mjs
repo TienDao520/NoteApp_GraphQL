@@ -28,7 +28,13 @@ const typeDefs = `#graphql
     id: String,
     name: String,
     createAt: String,
-    author: Author 
+    author: Author,
+    notes: [Note]
+  }
+
+  type Note {
+    id: String,
+    content: String,
   }
 
   type Author {
@@ -38,7 +44,7 @@ const typeDefs = `#graphql
 
   type Query {
     folders: [Folder]
-
+    folder(folderId: String): Folder
   }
 
 `;
@@ -52,9 +58,15 @@ const resolvers = {
     folders: () => {
       return fakeData.folders;
     },
+    folder: (parent, args) => {
+      const folderId = args.folderId;
+      console.log({ folderId });
+      return fakeData.folders.find((folder) => folderId === folder.id);
+    },
   },
   //And path/guidline when query to author when query abnormal query
-  //parent, args: data from sending from client
+  //parent, args: data sending from client
+  //Type is Folder and query to resolver author/notes then will execute resolver func...
 
   Folder: {
     author: (parent, args) => {
@@ -62,6 +74,12 @@ const resolvers = {
       const authorId = parent.authorId;
       return fakeData.authors.find((author) => author.id === authorId);
       // return { id: '123', name: 'NoteApp' };
+    },
+    //Add resolver for Note to guide how to get notes
+    notes: (parent, args) => {
+      console.log({ parent });
+      return fakeData.notes.filter((note) => note.folderId === parent.id);
+      // return [];
     },
   },
 };
