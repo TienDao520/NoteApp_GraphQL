@@ -6,6 +6,8 @@ import ProtectedRoute from './ProtectedRoute';
 import ErrorPage from '../pages/ErrorPage';
 import NoteList from '../components/NoteList';
 import Note from '../components/Note';
+import { notesLoader } from '../utils/noteUtils';
+import { foldersLoader } from '../utils/folderUtils';
 
 const AuthLayout = () => {
   return (
@@ -30,63 +32,12 @@ export default createBrowserRouter([
           {
             element: <Home />,
             path: '/',
-            loader: async () => {
-              const query = `query Folders {
-                folders {
-                  id
-                  name
-                  createAt
-                }
-              }`;
-              const res = await fetch('http://localhost:4000/graphql', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                body: JSON.stringify({
-                  query,
-                }),
-              });
-              const { data } = await res.json();
-              console.log({ data });
-              return data;
-            },
+            loader: foldersLoader,
             children: [
               {
                 element: <NoteList />,
                 path: `folders/:folderId`,
-                loader: async ({ params: { folderId } }) => {
-                  console.log(['loader'], { folderId });
-                  const query = `query Folder($folderId: String) {
-                    folder(folderId: $folderId) {
-                      id
-                      name
-                      notes {
-                        content
-                        id
-                      }
-                    }
-                  }`;
-                  const res = await fetch('http://localhost:4000/graphql', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Accept: 'application/json',
-                    },
-                    body: JSON.stringify({
-                      query,
-                      variables: {
-                        //folderId getting from params
-                        //same with folderId: folderId in ES6 since key and value are the same
-                        folderId,
-                      },
-                    }),
-                  });
-                  const { data } = await res.json();
-                  console.log('[Note List]', { data });
-                  return data;
-                },
+                loader: notesLoader,
 
                 children: [
                   {
