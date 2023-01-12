@@ -1,17 +1,20 @@
 import { Card, CardContent, Grid, List } from '@mui/material';
 import React, { useState } from 'react';
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { Link, Outlet, useParams, useLoaderData } from 'react-router-dom';
 
 export default function NoteList() {
   const { noteId } = useParams();
   const [activeNoteId, setActiveNoteId] = useState(noteId);
+  //data gettign from react-router server
+  const { folder } = useLoaderData();
 
-  const folder = {
-    notes: [
-      { id: '1', content: '<p>This is new note</p>' },
-      { id: '2', content: '<p>This is new note2</p>' },
-    ],
-  };
+  console.log('[NoteList]', { folder });
+  // const folder = {
+  //   notes: [
+  //     { id: '1', content: '<p>This is new note</p>' },
+  //     { id: '2', content: '<p>This is new note2</p>' },
+  //   ],
+  // };
   return (
     <Grid container height='100%'>
       <Grid
