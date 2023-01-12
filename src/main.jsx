@@ -25,9 +25,9 @@ const styles = {
   },
 };
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Container maxWidth='lg' sx={{ textAlign: 'center', marginTop: '50px' }}>
-      <RouterProvider router={router}></RouterProvider>
-    </Container>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Container maxWidth='lg' sx={{ textAlign: 'center', marginTop: '50px' }}>
+    <RouterProvider router={router}></RouterProvider>
+  </Container>
+  // </React.StrictMode>
 );
