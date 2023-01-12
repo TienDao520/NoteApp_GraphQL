@@ -21,7 +21,7 @@ const httpServer = http.createServer(app);
  * Query
  * Mutation: For delete update value
  * Subscription: For realtime update to clientwhen there are any changes from server
- * typeDefs here is like a document a set of rules name and kind of data
+ * typeDefs here is like a document a set of rules name and kind of data (schema)
  */
 const typeDefs = `#graphql
   type Folder {
@@ -45,6 +45,7 @@ const typeDefs = `#graphql
   type Query {
     folders: [Folder]
     folder(folderId: String): Folder
+    note(noteId: String): Note
   }
 
 `;
@@ -62,6 +63,10 @@ const resolvers = {
       const folderId = args.folderId;
       console.log({ folderId });
       return fakeData.folders.find((folder) => folderId === folder.id);
+    },
+    note: (parent, args) => {
+      const noteId = args.noteId;
+      return fakeData.notes.find((note) => note.id === noteId);
     },
   },
   //And path/guidline when query to author when query abnormal query
