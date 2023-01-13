@@ -89,6 +89,9 @@ const resolvers = {
   },
 };
 
+//Connect to DB
+const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.pzi6ywz.mongodb.net/?retryWrites=true&w=majority`;
+const PORT = process.env.PORT || 4000;
 // schema
 const server = new ApolloServer({
   typeDefs, //
@@ -102,7 +105,7 @@ await server.start(); //await without async func when the file is Javascript mod
 app.use(cors(), bodyParser.json(), expressMiddleware(server));
 
 await new Promise((resolve, reject) => {
-  httpServer.listen({ port: 4000 }, resolve);
+  httpServer.listen({ port: PORT }, resolve);
 });
 
 console.log('Server is ready at http://localhost:4000');
