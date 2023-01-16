@@ -13,6 +13,8 @@ import fakeData from './fakeData/index.js';
 
 import 'dotenv/config';
 
+import './firebaseConfig.js';
+
 //creates a new Express application
 // use this app constant to set up routes, configure middleware, and start the server.
 const app = express();
@@ -27,9 +29,10 @@ const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}
 const PORT = process.env.PORT || 4000;
 // schema
 const server = new ApolloServer({
-  typeDefs, //
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  typeDefs, //a GraphQL schema
+  resolvers, //an object that contains the functions that resolve the fields in the schema
+  //plugins is an array of Apollo Server plugins that can extend the functionality of the server.
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })], //ApolloServerPluginDrainHttpServer({ httpServer }) is a specific plugin that allows the server to handle requests from an HTTP server.
 });
 
 await server.start(); //await without async func when the file is Javascript module '.mjs'
@@ -44,6 +47,7 @@ mongoose
   })
   .then(async () => {
     console.log('Connected to DB');
+    //Start server with port
     await new Promise((resolve, reject) => {
       httpServer.listen({ port: PORT }, resolve);
       console.log('Server is ready at http://localhost:4000');

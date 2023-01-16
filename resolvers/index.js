@@ -14,10 +14,14 @@ export const resolvers = {
       return folders;
       // return fakeData.folders;
     },
-    folder: (parent, args) => {
+    folder: async (parent, args) => {
       const folderId = args.folderId;
       console.log({ folderId });
-      return fakeData.folders.find((folder) => folderId === folder.id);
+      const founFolder = await FolderModel.findOne({
+        _id: folderId,
+      });
+      return founFolder;
+      // return fakeData.folders.find((folder) => folderId === folder.id);
     },
     note: (parent, args) => {
       const noteId = args.noteId;
