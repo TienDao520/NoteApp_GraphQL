@@ -1,5 +1,5 @@
 import fakeData from '../fakeData/index.js';
-import { FolderModel } from '../models/index.js';
+import { AuthorModel, FolderModel } from '../models/index.js';
 
 /**Handle and send back to client base on query from client
  * return value for specific typeDefs
@@ -55,6 +55,17 @@ export const resolvers = {
       console.log({ newFolder });
       await newFolder.save();
       return newFolder;
+    },
+    register: async (parent, args) => {
+      const foundUser = await AuthorModel.findOne({ uid: args.uid });
+
+      if (!foundUser) {
+        const newUser = new AuthorModel(args);
+        await newUser.save();
+        return newUser;
+      }
+
+      return foundUser;
     },
   },
 };
