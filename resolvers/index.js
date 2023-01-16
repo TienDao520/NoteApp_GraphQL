@@ -1,3 +1,6 @@
+import fakeData from '../fakeData/index.js';
+import { FolderModel } from '../models/index.js';
+
 /**Handle and send back to client base on query from client
  * return value for specific typeDefs
  * Default resolvers mapping with same fields' names
@@ -5,8 +8,11 @@
  */
 export const resolvers = {
   Query: {
-    folders: () => {
-      return fakeData.folders;
+    folders: async () => {
+      const folders = await FolderModel.find();
+      console.log(['folders'], folders);
+      return folders;
+      // return fakeData.folders;
     },
     folder: (parent, args) => {
       const folderId = args.folderId;
@@ -34,6 +40,15 @@ export const resolvers = {
       console.log({ parent });
       return fakeData.notes.filter((note) => note.folderId === parent.id);
       // return [];
+    },
+  },
+  Mutation: {
+    addFolder: async (parent, args) => {
+      //Create newFolder with FolderModel
+      const newFolder = new FolderModel({ ...args, authorId: '123' });
+      console.log({ newFolder });
+      await newFolder.save();
+      return newFolder;
     },
   },
 };

@@ -30,4 +30,8 @@ export const typeDefs = `#graphql
     note(noteId: String): Note
   }
 
+  type Mutation {
+    addFolder(name: String!): Folder
+  }
+
 `;
