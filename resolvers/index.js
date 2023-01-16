@@ -17,10 +17,10 @@ export const resolvers = {
     folder: async (parent, args) => {
       const folderId = args.folderId;
       console.log({ folderId });
-      const founFolder = await FolderModel.findOne({
+      const foundFolder = await FolderModel.findOne({
         _id: folderId,
       });
-      return founFolder;
+      return foundFolder;
       // return fakeData.folders.find((folder) => folderId === folder.id);
     },
     note: (parent, args) => {

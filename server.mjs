@@ -15,6 +15,8 @@ import 'dotenv/config';
 
 import './firebaseConfig.js';
 
+import { getAuth } from 'firebase-admin/auth';
+
 //creates a new Express application
 // use this app constant to set up routes, configure middleware, and start the server.
 const app = express();
@@ -37,8 +39,33 @@ const server = new ApolloServer({
 
 await server.start(); //await without async func when the file is Javascript module '.mjs'
 
+//one of accessToken checking in middleware
+const authorizationJWT = async (req, res, next) => {
+  console.log({ authorization: req.headers.authorization });
+
+  const authorizationHeader = req.headers.authorization;
+
+  if (authorizationHeader) {
+    const accessToken = authorizationHeader.split(' ')[1];
+
+    getAuth()
+      .verifyIdToken(accessToken)
+      .then((decodedToken) => {
+        console.log({ decodedToken });
+
+        next();
+      })
+      .catch((err) => {
+        console.log({ err });
+        return res.status(403).json({ message: 'Forbidden', error: err });
+      });
+  } else {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+};
+
 //Adding middleware
-app.use(cors(), bodyParser.json(), expressMiddleware(server));
+app.use(cors(), authorizationJWT, bodyParser.json(), expressMiddleware(server));
 mongoose.set('strictQuery', false);
 mongoose
   .connect(URI, {
