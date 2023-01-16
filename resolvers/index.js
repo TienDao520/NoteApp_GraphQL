@@ -8,9 +8,11 @@ import { FolderModel } from '../models/index.js';
  */
 export const resolvers = {
   Query: {
-    folders: async () => {
-      const folders = await FolderModel.find();
-      console.log(['folders'], folders);
+    folders: async (parent, args, context) => {
+      const folders = await FolderModel.find({
+        authorId: context.uid,
+      });
+      console.log({ folders, context });
       return folders;
       // return fakeData.folders;
     },

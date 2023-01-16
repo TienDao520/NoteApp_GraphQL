@@ -52,6 +52,8 @@ const authorizationJWT = async (req, res, next) => {
       .verifyIdToken(accessToken)
       .then((decodedToken) => {
         console.log({ decodedToken });
+        //Response uid value = decodedToken handle in server side
+        res.locals.uid = decodedToken.uid;
 
         next();
       })
@@ -65,7 +67,17 @@ const authorizationJWT = async (req, res, next) => {
 };
 
 //Adding middleware
-app.use(cors(), authorizationJWT, bodyParser.json(), expressMiddleware(server));
+app.use(
+  cors(),
+  authorizationJWT,
+  bodyParser.json(),
+  expressMiddleware(server, {
+    //Add context to be used by all resolvers
+    context: async ({ req, res }) => {
+      return { uid: res.locals.uid };
+    },
+  })
+);
 mongoose.set('strictQuery', false);
 mongoose
   .connect(URI, {
