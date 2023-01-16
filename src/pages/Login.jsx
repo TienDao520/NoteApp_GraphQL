@@ -4,7 +4,7 @@ import { Button, Typography } from '@mui/material';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { AuthContext } from '../context/AuthProvider';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { graphQLRequest } from '../utils/request';
 
@@ -36,8 +36,8 @@ export default function Login() {
   };
 
   if (user?.uid) {
-    navigate('/');
-    return;
+    /* navigate('/');*/
+    return <Navigate to='/' />;
   }
 
   return (
