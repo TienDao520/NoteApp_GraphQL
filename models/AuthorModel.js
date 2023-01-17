@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 const authorSchema = new mongoose.Schema(
   {
-    content: {
+    uid: {
       type: String,
+      required: true,
     },
-    folderId: {
+    name: {
       type: String,
       required: true,
     },
