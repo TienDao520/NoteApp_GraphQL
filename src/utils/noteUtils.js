@@ -46,7 +46,6 @@ export const noteLoader = async ({ params: { noteId } }) => {
 
 export const addNewNote = async ({ params, request }) => {
   //request.formData is a submitted data
-
   const newNote = await request.formData();
 
   //convert formData to Object
@@ -69,4 +68,30 @@ export const addNewNote = async ({ params, request }) => {
   });
   console.log({ addNote });
   return addNote;
+};
+
+export const updateNote = async ({ params, request }) => {
+  //request.formData is a submitted data
+  const updatedNote = await request.formData();
+
+  //convert formData to Object
+  const formDataObj = {};
+  updatedNote.forEach((value, key) => {
+    formDataObj[key] = value;
+  });
+  console.log({ updatedNote, formDataObj });
+
+  const query = `mutation Mutation($id: String!, $content: String!) {
+    updateNote(id: $id, content: $content) {
+      id
+      content
+    }
+  }`;
+
+  const { updateNote } = await graphQLRequest({
+    query,
+    variables: formDataObj,
+  });
+  console.log({ updateNote });
+  return updateNote;
 };
