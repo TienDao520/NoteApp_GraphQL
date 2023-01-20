@@ -1,5 +1,16 @@
+import { GraphQLScalarType } from 'graphql';
+
 import fakeData from '../fakeData/index.js';
-import { AuthorModel, FolderModel, NoteModel } from '../models/index.js';
+import {
+  AuthorModel,
+  FolderModel,
+  NoteModel,
+  NotificationModel,
+} from '../models/index.js';
+
+import { PubSub } from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
 
 /**Handle and send back to client base on query from client
  * return value for specific typeDefs
@@ -7,6 +18,16 @@ import { AuthorModel, FolderModel, NoteModel } from '../models/index.js';
  * Each resolver have 4 parameters:
  */
 export const resolvers = {
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    //when reading type Date it will return some thing to client
+    parseValue(value) {
+      return new Date(value);
+    },
+    serialize(value) {
+      return value.toISOString();
+    },
+  }),
   Query: {
     folders: async (parent, args, context) => {
       const folders = await FolderModel.find({
@@ -74,6 +95,12 @@ export const resolvers = {
       //Create newFolder with FolderModel
       const newFolder = new FolderModel({ ...args, authorId: context.uid });
       console.log({ newFolder });
+      pubsub.publish('FOLDER_CREATED', {
+        folderCreated: {
+          message: 'New Folder created',
+        },
+      });
+
       await newFolder.save();
       return newFolder;
     },
@@ -87,6 +114,25 @@ export const resolvers = {
       }
 
       return foundUser;
+    },
+    pushNotification: async (parent, args) => {
+      // const content = args.content;
+      const newNotification = new NotificationModel(args);
+      await newNotification.save();
+      pubsub.publish('PUSH_NOTIFICATION', {
+        notification: {
+          message: args.content,
+        },
+      });
+      return { message: 'SUCCESS' };
+    },
+  },
+  Subscription: {
+    folderCreated: {
+      subscribe: () => pubsub.asyncIterator(['FOLDER_CREATED', 'NOTE_CREATED']),
+    },
+    notification: {
+      subscribe: () => pubsub.asyncIterator(['PUSH_NOTIFICATION']),
     },
   },
 };

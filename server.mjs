@@ -6,6 +6,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { expressMiddleware } from '@apollo/server/express4';
 import mongoose from 'mongoose';
+
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+
 import { resolvers } from './resolvers/index.js';
 import { typeDefs } from './schemas/index.js';
 
@@ -29,12 +34,41 @@ const httpServer = http.createServer(app);
 //Connect to DB
 const URI = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.pzi6ywz.mongodb.net/?retryWrites=true&w=majority`;
 const PORT = process.env.PORT || 4000;
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+// Creating the WebSocket server
+const wsServer = new WebSocketServer({
+  // This is the `httpServer` we created in a previous step.
+  server: httpServer,
+  // Pass a different path here if app.use
+  // serves expressMiddleware at a different path
+  path: '/',
+});
+
+// Hand in the schema we just created and have the
+// WebSocketServer start listening.
+const serverCleanup = useServer({ schema }, wsServer);
+
 // schema
 const server = new ApolloServer({
-  typeDefs, //a GraphQL schema
-  resolvers, //an object that contains the functions that resolve the fields in the schema
+  // typeDefs, //a GraphQL schema
+  // resolvers, //an object that contains the functions that resolve the fields in the schema
+  schema,
   //plugins is an array of Apollo Server plugins that can extend the functionality of the server.
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })], //ApolloServerPluginDrainHttpServer({ httpServer }) is a specific plugin that allows the server to handle requests from an HTTP server.
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    // Proper shutdown for the WebSocket server.
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ], //ApolloServerPluginDrainHttpServer({ httpServer }) is a specific plugin that allows the server to handle requests from an HTTP server.
 });
 
 await server.start(); //await without async func when the file is Javascript module '.mjs'
@@ -62,7 +96,8 @@ const authorizationJWT = async (req, res, next) => {
         return res.status(403).json({ message: 'Forbidden', error: err });
       });
   } else {
-    return res.status(401).json({ message: 'Unauthorized' });
+    next();
+    // return res.status(401).json({ message: 'Unauthorized' });
   }
 };
 

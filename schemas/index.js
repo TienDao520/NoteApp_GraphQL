@@ -6,6 +6,9 @@
  * typeDefs here is like a document a set of rules name and kind of data (schema)
  */
 export const typeDefs = `#graphql
+
+  scalar Date
+
   type Folder {
     id: String!,
     name: String,
@@ -17,6 +20,7 @@ export const typeDefs = `#graphql
   type Note {
     id: String!,
     content: String,
+    updatedAt: Date
   }
 
   type Author {
@@ -35,6 +39,16 @@ export const typeDefs = `#graphql
     addNote(content: String!, folderId: ID!): Note,
     updateNote(id: String!, content: String!): Note,
     register(uid: String!, name: String!): Author
+    pushNotification(content: String): Message,
+
+  }
+
+  type Message {
+    message: String
+  }
+  type Subscription {
+    folderCreated: Message
+    notification: Message
   }
 
 `;
