@@ -8,28 +8,52 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CreateNewFolderOutlined } from '@mui/icons-material';
+import { addNewFolder } from '../utils/folderUtils';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function NewFolder() {
-  const [newFolderName, setNewFolderName] = useState();
+  const [newFolderName, setNewFolderName] = useState('');
 
   const [open, setOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const navigate = useNavigate();
+
+  const popupName = searchParams.get('popup');
 
   const handleOpenPopup = () => {
-    setOpen(true);
+    // setOpen(true);
+    //set URL in search bar adding a param named popup=add-folder
+    setSearchParams({ popup: 'add-folder' });
   };
 
   const handleClose = () => {
-    setOpen(false);
+    // setOpen(false);
+
     setNewFolderName('');
+    //when navigate back the url changed and the page will be updated.
+    navigate(-1);
   };
 
   const handleNewFolderNameChange = (e) => {
     setNewFolderName(e.target.value);
   };
 
-  const handleAddNewFolder = () => {};
+  const handleAddNewFolder = async () => {
+    const { addFolder } = await addNewFolder({ name: newFolderName });
+    console.log({ addFolder });
+    handleClose();
+  };
+
+  useEffect(() => {
+    if (popupName === 'add-folder') {
+      setOpen(true);
+      return;
+    }
+    setOpen(false);
+  }, [popupName]);
 
   /**Tooltip: show explaination when hovering */
   return (
