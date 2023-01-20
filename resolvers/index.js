@@ -1,5 +1,5 @@
 import fakeData from '../fakeData/index.js';
-import { AuthorModel, FolderModel } from '../models/index.js';
+import { AuthorModel, FolderModel, NoteModel } from '../models/index.js';
 
 /**Handle and send back to client base on query from client
  * return value for specific typeDefs
@@ -11,6 +11,8 @@ export const resolvers = {
     folders: async (parent, args, context) => {
       const folders = await FolderModel.find({
         authorId: context.uid,
+      }).sort({
+        updatedAt: 'desc',
       });
       console.log({ folders, context });
       return folders;
@@ -35,10 +37,13 @@ export const resolvers = {
   //Type is Folder and query to resolver author/notes then will execute resolver func...
 
   Folder: {
-    author: (parent, args) => {
+    author: async (parent, args) => {
       console.log({ parent, args });
       const authorId = parent.authorId;
-      return fakeData.authors.find((author) => author.id === authorId);
+      const author = await AuthorModel.findOne({
+        uid: authorId,
+      });
+      return author;
       // return { id: '123', name: 'NoteApp' };
     },
     //Add resolver for Note to guide how to get notes
@@ -49,9 +54,16 @@ export const resolvers = {
     },
   },
   Mutation: {
-    addFolder: async (parent, args) => {
+    addNote: async (parent, args) => {
+      //args data submitted from client
+      const newNote = new NoteModel(args);
+      await newNote.save();
+      return newNote;
+    },
+
+    addFolder: async (parent, args, context) => {
       //Create newFolder with FolderModel
-      const newFolder = new FolderModel({ ...args, authorId: '123' });
+      const newFolder = new FolderModel({ ...args, authorId: context.uid });
       console.log({ newFolder });
       await newFolder.save();
       return newFolder;
