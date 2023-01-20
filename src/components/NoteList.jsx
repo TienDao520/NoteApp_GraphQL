@@ -60,7 +60,13 @@ export default function NoteList() {
       >
         <List
           subheader={
-            <Box>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <Typography>Notes</Typography>
               <Tooltip title='Add Note' onClick={handleAddNewNote}>
                 <IconButton size='small'>
