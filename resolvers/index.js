@@ -21,15 +21,15 @@ export const resolvers = {
     folder: async (parent, args) => {
       const folderId = args.folderId;
       console.log({ folderId });
-      const foundFolder = await FolderModel.findOne({
-        _id: folderId,
-      });
+      const foundFolder = await FolderModel.findById(folderId);
       return foundFolder;
       // return fakeData.folders.find((folder) => folderId === folder.id);
     },
-    note: (parent, args) => {
+    note: async (parent, args) => {
       const noteId = args.noteId;
-      return fakeData.notes.find((note) => note.id === noteId);
+      const note = await NoteModel.findById(noteId);
+      return note;
+      // return fakeData.notes.find((note) => note.id === noteId);
     },
   },
   //And path/guidline when query to author when query abnormal query
@@ -47,9 +47,12 @@ export const resolvers = {
       // return { id: '123', name: 'NoteApp' };
     },
     //Add resolver for Note to guide how to get notes
-    notes: (parent, args) => {
+    notes: async (parent, args) => {
       console.log({ parent });
-      return fakeData.notes.filter((note) => note.folderId === parent.id);
+      const notes = await NoteModel.find({ folderId: parent.id });
+      console.log({ notes });
+      return notes;
+      // return fakeData.notes.filter((note) => note.folderId === parent.id);
       // return [];
     },
   },
@@ -60,7 +63,11 @@ export const resolvers = {
       await newNote.save();
       return newNote;
     },
-
+    updateNote: async (parent, args) => {
+      const noteId = args.id;
+      const note = await NoteModel.findByIdAndUpdate(noteId, args);
+      return note;
+    },
     addFolder: async (parent, args, context) => {
       //Create newFolder with FolderModel
       const newFolder = new FolderModel({ ...args, authorId: context.uid });
