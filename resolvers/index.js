@@ -49,7 +49,9 @@ export const resolvers = {
     //Add resolver for Note to guide how to get notes
     notes: async (parent, args) => {
       console.log({ parent });
-      const notes = await NoteModel.find({ folderId: parent.id });
+      const notes = await NoteModel.find({ folderId: parent.id }).sort({
+        updatedAt: 'desc',
+      });
       console.log({ notes });
       return notes;
       // return fakeData.notes.filter((note) => note.folderId === parent.id);
