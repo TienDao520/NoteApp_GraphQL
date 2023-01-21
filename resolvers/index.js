@@ -96,6 +96,7 @@ export const resolvers = {
       const newFolder = new FolderModel({ ...args, authorId: context.uid });
       console.log({ newFolder });
       pubsub.publish('FOLDER_CREATED', {
+        //Data send to client
         folderCreated: {
           message: 'New Folder created',
         },
@@ -118,12 +119,13 @@ export const resolvers = {
     pushNotification: async (parent, args) => {
       // const content = args.content;
       const newNotification = new NotificationModel(args);
-      await newNotification.save();
       pubsub.publish('PUSH_NOTIFICATION', {
         notification: {
           message: args.content,
         },
       });
+      await newNotification.save();
+
       return { message: 'SUCCESS' };
     },
   },
