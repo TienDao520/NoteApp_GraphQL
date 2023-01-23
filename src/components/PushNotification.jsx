@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { createClient } from 'graphql-ws';
 import { GRAPHQL_SUBSCRIPTION_ENDPOINT } from '../utils/constants';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { Badge, Menu, MenuItem } from '@mui/material';
 
 const client = createClient({
